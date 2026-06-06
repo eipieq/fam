@@ -29,7 +29,8 @@ yarn-debug.log*
 # Vercel
 .vercel
 
-# DigitalOcean
+# DigitalOcean — live spec contains injected secrets
+.do/app.yaml
 .do/secrets
 
 # Move

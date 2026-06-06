@@ -1,0 +1,31 @@
+# Template for DO App Platform spec. Copy to app.yaml and fill in secrets.
+# Deploy: doctl apps create --spec .do/app.yaml
+name: fam-nautilus
+region: nyc
+services:
+  - name: nautilus
+    github:
+      repo: eipieq/fam
+      branch: main
+      deploy_on_push: true
+    source_dir: nautilus
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    http_port: 8787
+    build_command: corepack enable && pnpm install --frozen-lockfile --ignore-workspace
+    run_command: pnpm start
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 30
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: FALLBACK_MODE
+        scope: RUN_TIME
+        value: "true"
+      - key: NAUTILUS_SIGNER_HEX
+        scope: RUN_TIME
+        type: SECRET
+        value: REPLACE_WITH_32_BYTE_HEX
