@@ -12,6 +12,32 @@ export type GroupSummary = {
   createdAtMs: number;
 };
 
+// Once a group is created on-chain, its object ID is immutable. Tatum's
+// load-balanced fullnodes occasionally serve from a slightly-stale node and
+// return null for dynamic-field reads on freshly-created groups — that's what
+// caused groups to flicker in/out of the landing page. We cache resolved
+// IDs in sessionStorage so a single successful resolve is enough to keep the
+// group visible for the rest of the session.
+const CACHE_KEY = "fam:groupIdCache:v1";
+
+function readCache(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeCache(c: Record<string, string>) {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(c));
+  } catch {
+    /* ignore quota */
+  }
+}
+
 export async function listAllGroups(): Promise<GroupSummary[]> {
   if (!PACKAGE_ID) return [];
 
@@ -28,12 +54,25 @@ export async function listAllGroups(): Promise<GroupSummary[]> {
     true,
   ]);
 
+  const cache = readCache();
   const summaries: GroupSummary[] = [];
+  let cacheDirty = false;
+
   for (const e of events.data || []) {
     const j = e.parsedJson;
     if (!j) continue;
     const groupId = Number(j.group_id);
-    const groupObjectId = await resolveGroupObjectId(groupId);
+
+    let groupObjectId = cache[String(groupId)];
+    if (!groupObjectId) {
+      const resolved = await resolveGroupObjectId(groupId);
+      if (resolved) {
+        groupObjectId = resolved;
+        cache[String(groupId)] = resolved;
+        cacheDirty = true;
+      }
+    }
+
     if (groupObjectId) {
       summaries.push({
         groupId,
@@ -44,6 +83,8 @@ export async function listAllGroups(): Promise<GroupSummary[]> {
       });
     }
   }
+
+  if (cacheDirty) writeCache(cache);
   return summaries;
 }
 
