@@ -1,0 +1,11 @@
+[package]
+name = "fam"
+edition = "2024.beta"
+license = "MIT"
+authors = ["fam-hackathon"]
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+
+[addresses]
+fam = "0x0"

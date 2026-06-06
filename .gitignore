@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Env files — local only, never commit
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Vercel
+.vercel
+
+# DigitalOcean
+.do/secrets
+
+# Move
+contract/build/
+
+# Nautilus runtime data
+nautilus/data/
+
+# Local signer key (not committed)
+.signer.hex

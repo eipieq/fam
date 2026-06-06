@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* design guide: quiet utility, segmented cards, pixel-square headings.
+   text hierarchy: 900 titles, 800 headers, 500/400 secondary, 300 disabled. */
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}
+
+html {
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+body {
+  background: #ffffff;
+  color: #171717;
+  font-family: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+.font-pixel-square {
+  font-family: var(--font-pixel-square), monospace;
+  letter-spacing: 0;
+}
+
+.font-instrument {
+  font-family: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* dapp-kit modal trim */
+:where([data-rk]) {
+  --rk-colors-modalBackground: #ffffff;
+  --rk-colors-accentColor: #171717;
+}
